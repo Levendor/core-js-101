@@ -96,12 +96,12 @@ function getFastestPromise(array) {
  *    });
  *
  */
-function chainPromises(array, action) {
-  return Promise.resolve(array).then((arr) => {
-    const mass = [];
-    arr.forEach((item) => item.then((res) => mass.push(res)));
-    return mass;
-  }).then((results) => results.reduce(action));
+function chainPromises(/* array, action */) {
+  // return Promise.resolve(array).then((arr) => {
+  //   const mass = [];
+  //   arr.forEach((item) => item.then((res) => mass.push(res)));
+  //   return mass;
+  // }).then((results) => results.reduce(action));
 }
 
 module.exports = {
