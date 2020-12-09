@@ -135,23 +135,30 @@ function isTriangle(a, b, c) {
  *
  */
 function doRectanglesOverlap(rect1, rect2) {
-  const coord1 = [
-    [rect1.top, rect1.left],
-    [rect1.top, rect1.left + rect1.width],
-    [rect1.top + rect1.height, rect1.left + rect1.width],
-    [rect1.top + rect1.height, rect1.left],
-  ];
-  const borderTop = rect2.top;
-  const borderRight = rect2.left + rect2.width;
-  const borderBottom = rect2.top + rect2.height;
-  const borderLeft = rect2.left;
-  for (let i = 0; i < coord1.length; i += 1) {
-    if (coord1[i][0] >= borderTop
-      && coord1[i][0] <= borderBottom
-      && coord1[i][1] >= borderLeft
-      && coord1[i][1] <= borderRight) return true;
-  }
-  return false;
+  const coord1 = {
+    x1: rect1.left,
+    y1: rect1.top,
+    x2: rect1.left + rect1.width,
+    y2: rect1.top + rect1.height,
+  };
+
+  const coord2 = {
+    x1: rect2.left,
+    y1: rect2.top,
+    x2: rect2.left + rect2.width,
+    y2: rect2.top + rect2.height,
+  };
+
+  const top = Math.min(coord1.y2, coord2.y2);
+  const right = Math.min(coord1.x2, coord2.x2);
+  const bottom = Math.max(coord1.y1, coord2.y1);
+  const left = Math.max(coord1.x1, coord2.x1);
+
+  const width = right - left;
+  const height = top - bottom;
+
+  if (width < 0 || height < 0) return false;
+  return true;
 }
 
 
@@ -182,9 +189,8 @@ function doRectanglesOverlap(rect1, rect2) {
  *
  */
 function isInsideCircle(circle, point) {
-  console.log(circle, point);
   if (Math.sqrt((point.x - circle.center.x) ** 2
-  + (point.y - circle.center.y) ** 2) <= circle.radius) return true;
+  + (point.y - circle.center.y) ** 2) < circle.radius) return true;
   return false;
 }
 
@@ -315,8 +321,8 @@ function isCreditCardNumber(ccn) {
  *   10000 ( 1+0+0+0+0 = 1 ) => 1
  *   165536 (1+6+5+5+3+6 = 26,  2+6 = 8) => 8
  */
-function getDigitalRoot(/* num */) {
-  throw new Error('Not implemented');
+function getDigitalRoot(num) {
+  return ((num - 1) % 9) + 1;
 }
 
 
@@ -341,8 +347,16 @@ function getDigitalRoot(/* num */) {
  *   '{)' = false
  *   '{[(<{[]}>)]}' = true
  */
-function isBracketsBalanced(/* str */) {
-  throw new Error('Not implemented');
+function isBracketsBalanced(str) {
+  const template = ['[]', '()', '{}', '<>'];
+
+  function bracketBalancer(st, temp) {
+    let string = st;
+    if (!temp.some((item) => string.includes(item))) return !string.length;
+    string = st.replace(/\[\]|\(\)|\{\}|<>/, '');
+    return bracketBalancer(string, template);
+  }
+  return bracketBalancer(str, template);
 }
 
 
@@ -366,8 +380,17 @@ function isBracketsBalanced(/* str */) {
  *    365, 4  => '11231'
  *    365, 10 => '365'
  */
-function toNaryString(/* num, n */) {
-  throw new Error('Not implemented');
+function toNaryString(num, n) {
+  let count = num;
+  let deci = 0;
+  const output = [];
+  for (let i = 0; count >= n; i += 1) {
+    deci = count % n;
+    output.push(deci);
+    count = Math.trunc(count / n);
+  }
+  output.push(count);
+  return +output.reverse().join('');
 }
 
 
