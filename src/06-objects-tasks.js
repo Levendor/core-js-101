@@ -192,7 +192,7 @@ const cssSelectorBuilder = {
   combine(...args) {
     // const arr = [];
     this.selectors.push(...args);
-    console.log(this.selectors);
+    // console.log(this.selectors);
     // arr.push(`${selector1.stringify()} ${combinator} ${selector2.stringify()}`);
     // this.selectors.push(...arr);
     // this.selectors.push(selector1.stringify());
