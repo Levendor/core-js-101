@@ -124,56 +124,64 @@ const cssSelectorBuilder = {
   selectors: [],
 
   element(value) {
-    if (this.isElement) throw Error('Element, id and pseudo-element should not occur more then one time inside the selector');
-    if (this.isId
-      || this.isClass
-      || this.isAttr
-      || this.isPseudoClass
-      || this.isPseudoElement) throw Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    // if (this.isElement) throw Error('Element, id and pseudo-element should
+    // not occur more then one time inside the selector');
+    // if (this.isId
+    //   || this.isClass
+    //   || this.isAttr
+    //   || this.isPseudoClass
+    //   || this.isPseudoElement) throw Error('Selector parts should be arranged
+    // in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
     this.isElement = true;
     this.selectors.push(value);
     return this;
   },
 
   id(value) {
-    if (this.isId) throw Error('Element, id and pseudo-element should not occur more then one time inside the selector');
-    if (this.isClass
-      || this.isAttr
-      || this.isPseudoClass
-      || this.isPseudoElement) throw Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    // if (this.isId) throw Error('Element, id and pseudo-element should
+    // not occur more then one time inside the selector');
+    // if (this.isClass
+    //   || this.isAttr
+    //   || this.isPseudoClass
+    //   || this.isPseudoElement) throw Error('Selector parts should be arranged
+    // in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
     this.isId = true;
-    this.selectors.push(`#${value}`);
+    this.selectors.push('#', value);
     return this;
   },
 
   class(value) {
-    if (this.isAttr
-      || this.isPseudoClass
-      || this.isPseudoElement) throw Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    // if (this.isAttr
+    //   || this.isPseudoClass
+    //   || this.isPseudoElement) throw Error('Selector parts should be arranged
+    // in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
     this.isClass = true;
-    this.selectors.push(`.${value}`);
+    this.selectors.push('.', value);
     return this;
   },
 
   attr(value) {
-    if (this.isPseudoClass
-      || this.isPseudoElement) throw Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    // if (this.isPseudoClass
+    //   || this.isPseudoElement) throw Error('Selector parts should be arranged
+    // in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
     this.isAttr = true;
-    this.selectors.push(`[${value}]`);
+    this.selectors.push('[', value, ']');
     return this;
   },
 
   pseudoClass(value) {
-    if (this.isPseudoElement) throw Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    // if (this.isPseudoElement) throw Error('Selector parts should be arranged
+    // in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
     this.isPseudoClass = true;
-    this.selectors.push(`:${value}`);
+    this.selectors.push(':', value);
     return this;
   },
 
   pseudoElement(value) {
-    if (this.isPseudoElement) throw Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+    // if (this.isPseudoElement) throw Error('Element, id and pseudo-element should
+    // not occur more then one time inside the selector');
     this.isPseudoElement = true;
-    this.selectors.push(`::${value}`);
+    this.selectors.push('::', value);
     return this;
   },
 
@@ -189,15 +197,16 @@ const cssSelectorBuilder = {
     return emmet;
   },
 
-  combine(...args) {
+  combine() {
+    throw new Error('Not implemented');
     // const arr = [];
-    this.selectors.push(...args);
+    // this.selectors.push(...args);
     // console.log(this.selectors);
     // arr.push(`${selector1.stringify()} ${combinator} ${selector2.stringify()}`);
     // this.selectors.push(...arr);
     // this.selectors.push(selector1.stringify());
     // this.selectors.push(selector2.stringify());
-    return this;
+    // return this;
   },
 };
 
