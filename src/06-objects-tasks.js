@@ -124,62 +124,69 @@ const cssSelectorBuilder = {
   selectors: [],
 
   element(value) {
-    // if (this.isElement) throw Error('Element, id and pseudo-element should
-    // not occur more then one time inside the selector');
-    // if (this.isId
-    //   || this.isClass
-    //   || this.isAttr
-    //   || this.isPseudoClass
-    //   || this.isPseudoElement) throw Error('Selector parts should be arranged
-    // in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
-    this.isElement = true;
-    this.selectors.push(value);
-    return this;
+    if (this.isElement) this.clearDuplicationError();
+    if (
+      this.isId
+      || this.isClass
+      || this.isAttr
+      || this.isPseudoClass
+      || this.isPseudoElement
+    ) this.clearOrderError();
+    const cssBuilder = Object.create(cssSelectorBuilder);
+    cssBuilder.selectors = [];
+    cssBuilder.isElement = true;
+    cssBuilder.selectors.push(value);
+    return cssBuilder;
   },
 
   id(value) {
-    // if (this.isId) throw Error('Element, id and pseudo-element should
-    // not occur more then one time inside the selector');
-    // if (this.isClass
-    //   || this.isAttr
-    //   || this.isPseudoClass
-    //   || this.isPseudoElement) throw Error('Selector parts should be arranged
-    // in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
-    this.isId = true;
-    this.selectors.push('#', value);
-    return this;
+    if (this.isId) this.clearDuplicationError();
+    if (
+      this.isClass
+      || this.isAttr
+      || this.isPseudoClass
+      || this.isPseudoElement
+    ) this.clearOrderError();
+    const css1Builder = Object.create(cssSelectorBuilder);
+    css1Builder.selectors = [];
+    if (this.isElement) css1Builder.selectors = this.selectors;
+    css1Builder.isId = true;
+    css1Builder.selectors.push('#', value);
+    return css1Builder;
   },
 
   class(value) {
-    // if (this.isAttr
-    //   || this.isPseudoClass
-    //   || this.isPseudoElement) throw Error('Selector parts should be arranged
-    // in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    if (
+      this.isAttr
+      || this.isPseudoClass
+      || this.isPseudoElement
+    ) this.clearOrderError();
     this.isClass = true;
     this.selectors.push('.', value);
     return this;
   },
 
   attr(value) {
-    // if (this.isPseudoClass
-    //   || this.isPseudoElement) throw Error('Selector parts should be arranged
-    // in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    if (
+      this.isPseudoClass
+      || this.isPseudoElement
+    ) this.clearOrderError();
     this.isAttr = true;
     this.selectors.push('[', value, ']');
     return this;
   },
 
   pseudoClass(value) {
-    // if (this.isPseudoElement) throw Error('Selector parts should be arranged
-    // in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    if (
+      this.isPseudoElement
+    ) this.clearOrderError();
     this.isPseudoClass = true;
     this.selectors.push(':', value);
     return this;
   },
 
   pseudoElement(value) {
-    // if (this.isPseudoElement) throw Error('Element, id and pseudo-element should
-    // not occur more then one time inside the selector');
+    if (this.isPseudoElement) this.clearDuplicationError();
     this.isPseudoElement = true;
     this.selectors.push('::', value);
     return this;
@@ -197,25 +204,38 @@ const cssSelectorBuilder = {
     return emmet;
   },
 
-  combine() {
-    throw new Error('Not implemented');
-    // const arr = [];
-    // this.selectors.push(...args);
-    // console.log(this.selectors);
-    // arr.push(`${selector1.stringify()} ${combinator} ${selector2.stringify()}`);
-    // this.selectors.push(...arr);
-    // this.selectors.push(selector1.stringify());
-    // this.selectors.push(selector2.stringify());
-    // return this;
+  combine(...args) {
+    // throw new Error('Not implemented');
+    const arr = [...args].map((item) => {
+      if (typeof item === 'object') return item.stringify();
+      return ` ${item} `;
+    });
+    this.selectors = [...arr];
+    return this;
+  },
+
+  clearDuplicationError() {
+    this.isElement = null;
+    this.isId = null;
+    this.isClass = null;
+    this.isAttr = null;
+    this.isPseudoClass = null;
+    this.isPseudoElement = null;
+    this.selectors = [];
+    throw Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+  },
+
+  clearOrderError() {
+    this.isElement = null;
+    this.isId = null;
+    this.isClass = null;
+    this.isAttr = null;
+    this.isPseudoClass = null;
+    this.isPseudoElement = null;
+    this.selectors = [];
+    throw Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
   },
 };
-
-/*           builder.combine(
-*               builder.element('tr').pseudoClass('nth-of-type(even)'),
-*               ' ',
-*               builder.element('td').pseudoClass('nth-of-type(even)')
-*           )
-*/
 
 module.exports = {
   Rectangle,
